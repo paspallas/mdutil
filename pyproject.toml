@@ -9,6 +9,25 @@ version = "0.1.0"
 description = "A command line tool for megadrive developers"
 authors = [{ name = "Pablo Porta", email = "paspallasdev@gmail.com" }]
 requires-python = ">=3.8"
+dependencies = ["click>=8.1.7", "numpy>=2.1.2", "pillow>=11.0.0"]
+
+
+# For PyPI distribution
+classifiers = [
+    "Development status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/paspallas/mdutil"
+"Bug Tracker" = "https://github.com/paspallas/mdutil/issues"
 
 [project.scripts]
 mdutil = "mdutil.cli.main:cli"

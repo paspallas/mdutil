@@ -21,7 +21,7 @@ pipx install mdutil
 This will install `mdutil` in a virtual environment managed by `pipx`. You can now start using it from the command line. Check the currently installed version by running:
 
 ```bash
-mdutil --version
+mdutil version
 ```
 
 When a new version becomes available you can upgrade your local installation by running:
