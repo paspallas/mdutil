@@ -6,6 +6,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "mdutil"
 version = "0.1.0"
+readme = "README.md"
 description = "A command line tool for megadrive developers"
 authors = [{ name = "Pablo Porta", email = "paspallasdev@gmail.com" }]
 requires-python = ">=3.8"
