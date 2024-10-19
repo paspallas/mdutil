@@ -6,8 +6,9 @@ from typing import List
 import click
 import numpy as np
 from PIL import Image
-from tileset import Tileset
-from util import Size
+
+from mdutil.core.tileset import Tileset
+from mdutil.core.util import Size
 
 
 class MapImageBuilder:

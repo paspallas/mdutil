@@ -1,0 +1,14 @@
+
+[build-system]
+requires = ["setuptools>42"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mdutil"
+version = "0.1.0"
+description = "A command line tool for megadrive developers"
+authors = [{ name = "Pablo Porta", email = "paspallasdev@gmail.com" }]
+requires-python = ">=3.8"
+
+[project.scripts]
+mdutil = "mdutil.cli.main:cli"

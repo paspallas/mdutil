@@ -3,13 +3,11 @@ from enum import Enum, auto
 from typing import Dict, List, Tuple
 
 import numpy as np
-from palette import Palette
 from PIL import Image, ImageDraw
-from util import Size
 
-
-class TilesetError(Exception):
-    pass
+from mdutil.core.exceptions import TilesetError
+from mdutil.core.palette import Palette
+from mdutil.core.util import Size
 
 
 @dataclass

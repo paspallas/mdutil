@@ -4,3 +4,4 @@ artifact/
 .venv/
 snipet/
 .DS_Store
+*.egg-info
