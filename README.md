@@ -1,6 +1,6 @@
 # mdutil
 
-`mdutil` is a Python cli application that helps to perform common tasks in the context of game development for retro systems. It`s specially tailored, but not limited to, the Sega Megadrive used in conjuntion
+`mdutil` is a Python cli application that helps to perform common tasks in the context of game development for retro systems. It's specially tailored, but not limited to, the Sega Megadrive used in conjuntion
 with SGDK.
 
 ## Requirements
