@@ -42,11 +42,11 @@ def genmap(
     verbose: bool,
 ):
     """
-    Generate a png file that can be used as a sgdk MAP resource
+    Generate a png file that can be used as a SGDK MAP resource.
 
-    JSON_PATH: Path to the input tiled file\n
-    TILESET_PATH: Path to the tileset image\n
-    OUTPUT_PATH: Path to the output image
+    JSON_PATH: Path to the input tiled file\n.
+    TILESET_PATH: Path to the tileset image\n.
+    OUTPUT_PATH: Path to the output image.
     """
     try:
         # Check if output tiles exist
