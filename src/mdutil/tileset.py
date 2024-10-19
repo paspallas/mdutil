@@ -1,4 +1,3 @@
-import sys
 from dataclasses import dataclass
 from enum import Enum, auto
 from typing import Dict, List, Tuple
@@ -7,6 +6,10 @@ import numpy as np
 from palette import Palette
 from PIL import Image, ImageDraw
 from util import Size
+
+
+class TilesetError(Exception):
+    pass
 
 
 @dataclass
@@ -27,36 +30,34 @@ class TileDebugger:
         path: str,
         palette: Palette,
     ):
-        self._errors = errors
-        self._path = path
-        self._tileset_array = tileset
-        self._pal = palette
+        self.errors = errors
+        self.path = path
+        self.tileset_array = tileset
+        self.pal = palette
 
     def generate_report(self) -> None:
-        error_messages = [str(error) for error in self._errors]
-
-        print(
-            "Oops! Errors encountered while processing the tileset:\n"
-            + "\n".join(error_messages)
-            + "\n\n  Dumped debug tileset image",
-            file=sys.stderr,
-        )
-
         self._create_debug_tileset()
 
+        error_messages = [str(error) for error in self.errors]
+        raise TilesetError(
+            "Bad tiles encountered while processing the tileset:\n"
+            + "\n".join(error_messages)
+            + f"\n\n  Dumped debug tileset image to '{self.path}'."
+        )
+
     def _create_debug_tileset(self) -> None:
-        with Image.fromarray(self._tileset_array, "P") as background:
-            background.putpalette(self._pal.as_list())
+        with Image.fromarray(self.tileset_array, "P") as background:
+            background.putpalette(self.pal.as_list())
             background = background.convert("RGBA")
 
             with Image.new("RGBA", background.size, (0, 0, 0, 0)) as overlay:
                 draw = ImageDraw.Draw(overlay, mode="RGBA")
-                for error in self._errors:
+                for error in self.errors:
                     draw.rectangle(error.rect, fill=(255, 0, 0, 128))
 
                 with Image.alpha_composite(background, overlay) as result:
                     result.save(
-                        f"{self._path.split(".png")[0]}_error.png",
+                        f"{self.path.split(".png")[0]}_error.png",
                         format="PNG",
                         optimize=True,
                     )
@@ -89,29 +90,15 @@ class Tileset:
 
         try:
             self.tiles_lo = self._extract_tiles(self.tileset_array, tile_size)
-        except Exception:
+        except ValueError:
             debug = TileDebugger(
                 self.errors, self.tileset_array, self.path, self.palette
             )
             debug.generate_report()
-            sys.exit(1)
 
     def _load(self, img_path: str) -> np.ndarray:
-        """Load the tileset color index data.
-
-        Args:
-            path (str): path to the tileset image.
-
-        Returns:
-            np.ndarray: color index array.
-        """
-        try:
-            with Image.open(img_path).convert("P") as img:
-                return np.array(img)
-
-        except FileNotFoundError as e:
-            print(f"Error: {str(e)}")
-            sys.exit(-1)
+        with Image.open(img_path).convert("P") as img:
+            return np.array(img)
 
     def _encode_hi_priority(self, tile_id: int) -> np.array:
         if tile_id in self.tiles_hi:
