@@ -1,14 +1,53 @@
+import sys
+import traceback
+from functools import wraps
 from pathlib import Path
 
 import click
 from tilemap import MapImageBuilder
 from tileset import TilesetError
+from version import __version__
+
+
+def debug_exceptions(f):
+    """Decorator to handle exceptions in debug mode"""
+
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        try:
+            return f(*args, **kwargs)
+        except Exception as e:
+            ctx = click.get_current_context()
+            if ctx.obj.get("debug", False):
+                click.echo(click.style("Traceback", fg="red", bold=True), err=True)
+                click.echo(
+                    click.style(
+                        "".join(traceback.format_tb(e.__traceback__)), fg="red"
+                    ),
+                    err=True,
+                )
+                click.echo(
+                    click.style(
+                        f"\n{e.__class__.__name__}: {str(e)}", fg="red", bold=True
+                    ),
+                    err=True,
+                )
+                sys.exit(1)
+            else:
+                raise
+
+    return wrapper
 
 
 @click.group()
-def cli():
-    """Megadrive development swiss army knife."""
-    pass
+@click.option(
+    "--debug/--nodebug", default=False, help="Enable debug mode with full stack traces."
+)
+@click.pass_context
+def cli(ctx, debug):
+    """The swiss army knife for megadrive development"""
+    ctx.ensure_object(dict)
+    ctx.obj["debug"] = debug
 
 
 @cli.command()
@@ -33,7 +72,10 @@ def cli():
 @click.option(
     "--verbose", "-v", is_flag=True, help="Print detailed progress information."
 )
+@click.pass_context
+@debug_exceptions
 def genmap(
+    ctx,
     json_path: Path,
     tileset_path: Path,
     output_path: Path,
@@ -74,8 +116,28 @@ def genmap(
     except TilesetError as e:
         raise click.ClickException(f"Tileset error: {str(e)}")
     except Exception as e:
-        raise click.ClickException(f"Unexpected error: {str(e)}")
+        if ctx.obj["debug"]:
+            raise
+        else:
+            click.echo(click.style(f"Error: {str(e)}", fg="red"), err=True)
+
+
+@cli.command()
+def version():
+    """Show detailed version information."""
+    import platform
+
+    import PIL
+
+    click.echo(
+        f"""
+ mdutil v{__version__}
+ Python {sys.version.split()[0]}
+ Platform: {platform.platform()} 
+ Pillow: {PIL.__version__}
+    """.strip()
+    )
 
 
 if __name__ == "__main__":
-    cli()
+    cli(obj={})
