@@ -1,13 +1,14 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath(".."))
+# Add the virtual environment absolute path to python path
+sys.path.insert(0, os.path.abspath("../.."))
 
 # Project information
 project = "mdutil"
 copyright = "2024, Pablo Porta 'paspallas'"
 author = "Pablo Porta"
-release = "1.0.0"
+release = "0.1.0"
 
 # General configuration
 extensions = [
@@ -18,12 +19,8 @@ extensions = [
 ]
 
 templates_path = ["_templates"]
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+exclude_patterns = ["../_build", "Thumbs.db", ".DS_Store"]
 
 # Html output options
 html_theme = "sphinx_rtd_theme"
-html_static_path = ["_static"]
-
-intersphinx_mapping = {
-    "python": ("https://docs.python.org/3", None),
-}
+html_static_path = ["../_static"]
