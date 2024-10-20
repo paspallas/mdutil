@@ -6,3 +6,4 @@ snipet/
 .DS_Store
 *.egg-info
 build/
+docs/_build/
