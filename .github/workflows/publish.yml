@@ -15,7 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: release
-      url: https://pypi.org/p/mdutil
+      url: https://pypi.org/p/mdutilities
+    permissions:
+      id-token: write
 
     steps:
     - uses: actions/checkout@v4
@@ -35,12 +37,7 @@ jobs:
       run: python -m build
 
     - name: Publish to PyPI
-      env:
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
-      run: |
-        twine check dist/*
-        twine upload dist/*
+      uses: pypa/gh-action-pypi-publish@release/v1
 
     - name: Test install with pipx
       run: |

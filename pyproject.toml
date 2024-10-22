@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mdutil"
-dynamic = ["version"]
+version = "0.1.0"
 readme = "README.md"
 description = "A command line tool for megadrive homebrew developers"
 authors = [{ name = "Pablo Porta", email = "paspallasdev@gmail.com" }]
@@ -26,6 +26,7 @@ classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
     "Intended Audience :: End Users/Desktop",
+    "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
