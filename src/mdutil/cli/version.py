@@ -7,7 +7,7 @@ from mdutil.version import __version__
 
 @click.command()
 def version():
-    """Show detailed version information."""
+    """Show detailed version information"""
     import platform
 
     import PIL

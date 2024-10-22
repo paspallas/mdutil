@@ -2,9 +2,24 @@ from pathlib import Path
 
 import click
 
-from mdutil.core import MapImageBuilder, TilesetError
+from mdutil.core import (
+    MapBuilderError,
+    MapImageBuilder,
+    PropertyError,
+    TiledMapError,
+    TileLayerError,
+    TilesetError,
+)
 
+from .params import ParameterPair
 from .utils import debug_exceptions
+
+
+def validate_layer_id(id_: str, lo: str, hi: str):
+    if id_ not in ("bga", "bgb"):
+        raise click.BadParameter(
+            f"Invalid plane identifier: '{id_}'. Options [bga, bgb]."
+        )
 
 
 @click.command()
@@ -15,19 +30,14 @@ from .utils import debug_exceptions
     "tileset_path", type=click.Path(exists=True, dir_okay=True, path_type=Path)
 )
 @click.argument(
-    "output_path", type=click.Path(exists=False, dir_okay=True, path_type=Path)
+    "output_folder", type=click.Path(exists=False, dir_okay=True, path_type=Path)
 )
 @click.option(
-    "--lo-layer-name", "-l", type=str, default="LO", help="Lo priority layer name."
-)
-@click.option(
-    "--hi-layer-name", "-h", type=str, default="HI", help="Hi priority layer name."
-)
-@click.option(
-    "--force", "-f", is_flag=True, help="Overwrite output files if they exist."
-)
-@click.option(
-    "--verbose", "-v", is_flag=True, help="Print detailed progress information."
+    "--layer",
+    "-l",
+    type=ParameterPair(value_types=(str, str), validator=validate_layer_id),
+    multiple=True,
+    help="Plane to export in the format 'bg[a,b]=lo_pri_layer_name,hi_pri_layer_name'. Use '_' for excluding a layer from the export.",
 )
 @click.pass_context
 @debug_exceptions
@@ -35,43 +45,47 @@ def genmap(
     ctx,
     json_path: Path,
     tileset_path: Path,
-    output_path: Path,
-    lo_layer_name: str,
-    hi_layer_name: str,
-    force: bool,
-    verbose: bool,
+    output_folder: Path,
+    layer: ParameterPair,
 ):
     """
-    Generate a png file that can be used as a SGDK MAP resource.
+    Generate a png file that can be used as a SGDK MAP resource from a tiled file
 
-    JSON_PATH: Path to the input tiled file\n.
-    TILESET_PATH: Path to the tileset image\n.
-    OUTPUT_PATH: Path to the output image.
+    JSON_PATH: Path to the input tiled file in json format\n
+    TILESET_PATH: Path to the tileset image\n
+    OUTPUT_PATH: Path to the output image
+
     """
     try:
-        # Check if output tiles exist
-        if not force:
-            if output_path.exists():
-                raise click.UsageError(
-                    f"Ouput file exists: {output_path}. Use --force to overwrite."
-                )
-
         # Create output directory if it doesn't exist
-        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_folder.mkdir(parents=True, exist_ok=True)
+        output_path = output_folder / json_path.stem
 
-        if verbose:
-            click.echo("Starting tiled file conversion...")
-            click.echo(f"Reading from: '{json_path}'")
+        builder = MapImageBuilder(json_path.as_posix(), tileset_path.as_posix())
 
-        builder = MapImageBuilder(
-            json_path.as_posix(), tileset_path.as_posix(), lo_layer_name, hi_layer_name
-        )
-        builder.save(output_path.as_posix())
+        for id_val, lo, hi in layer:
+            lo_layer = lo if lo != "_" else None
+            hi_layer = hi if hi != "_" else None
+
+            if id_val == "bgb":
+                output = f"{output_path}_BGB.png"
+            elif id_val == "bga":
+                output = f"{output_path}_BGA.png"
+
+            builder.save(output, lo_layer, hi_layer)
 
     except click.UsageError as e:
         raise click.UsageError(str(e))
     except TilesetError as e:
         raise click.ClickException(f"Tileset error: {str(e)}")
+    except MapBuilderError as e:
+        raise click.ClickException(f"Map build error: {str(e)}")
+    except PropertyError as e:
+        raise click.ClickException(f"Property error: {str(e)}")
+    except TileLayerError as e:
+        raise click.ClickException(f"Tilelayer error: {str(e)}")
+    except TiledMapError as e:
+        raise click.ClickException(f"Tiled map error: {str(e)}")
     except Exception as e:
         if ctx.obj["debug"]:
             raise
