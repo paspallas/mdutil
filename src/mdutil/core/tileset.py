@@ -55,6 +55,7 @@ class TileDebugger:
 
                 with Image.alpha_composite(background, overlay) as result:
                     result.save(
+                        # TODO use pathlib
                         f"{self.path.split(".png")[0]}_error.png",
                         format="PNG",
                         optimize=True,
