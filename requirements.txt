@@ -1,3 +1,4 @@
 click==8.1.7
 numpy==2.1.2
 pillow==11.0.0
+zstandard==0.23.0
