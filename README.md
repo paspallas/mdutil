@@ -15,7 +15,7 @@ Make sure to install the requirements. A complete guide on how to install `pipx`
 After that, open a terminal and run the following command:
 
 ```bash
-pipx install mdutil
+pipx install mdutilities
 ```
 
 This will install `mdutil` in a virtual environment managed by `pipx`. You can now start using it from the command line. Check the currently installed version by running:
@@ -27,13 +27,13 @@ mdutil version
 When a new version becomes available you can upgrade your local installation by running:
 
 ```bash
-pipx upgrade mdutil
+pipx upgrade mdutilities
 ```
 
 To completely uninstall `mdutil` run:
 
 ```bash
-pipx uninstall mdutil
+pipx uninstall mdutilities
 ```
 
 ## Usage
