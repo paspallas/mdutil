@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum, auto
+from pathlib import Path
 from typing import Dict, List, Tuple
 
 import numpy as np
@@ -54,9 +55,10 @@ class TileDebugger:
                     draw.rectangle(error.rect, fill=(255, 0, 0, 128))
 
                 with Image.alpha_composite(background, overlay) as result:
+                    path = f"{Path(self.path).stem}_error.png"
+
                     result.save(
-                        # TODO use pathlib
-                        f"{self.path.split(".png")[0]}_error.png",
+                        path,
                         format="PNG",
                         optimize=True,
                     )
