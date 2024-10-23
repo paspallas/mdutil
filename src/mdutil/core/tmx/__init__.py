@@ -1,6 +1,7 @@
 from .layer import BaseLayer, LayerType, ObjectLayer, TileLayer
-from .map import Map
+from .map import TmxMap
 from .object import Object
+from .parser import MapFactory
 from .property import CustomProperty
 
 __all__ = [
@@ -8,7 +9,8 @@ __all__ = [
     "LayerType",
     "ObjectLayer",
     "TileLayer",
-    "Map",
+    "TmxMap",
     "Object",
     "CustomProperty",
+    "MapFactory",
 ]

@@ -35,9 +35,9 @@ class Object:
         return "\n".join(description)
 
     @classmethod
-    def from_json(cls, data: Dict[str, Any]) -> "Object":
+    def from_dict(cls, data: Dict[str, Any]) -> "Object":
         properties = [
-            CustomProperty.from_json(prop) for prop in data.get("properties", [])
+            CustomProperty.from_dict(prop) for prop in data.get("properties", [])
         ]
 
         return cls(

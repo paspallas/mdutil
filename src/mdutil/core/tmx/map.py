@@ -1,4 +1,3 @@
-import json
 from typing import Any, Dict, List
 
 from mdutil.core.exceptions import *
@@ -7,7 +6,7 @@ from mdutil.core.util import Size
 from .layer import BaseLayer, LayerType, ObjectLayer, TileLayer
 
 
-class Map:
+class TmxMap:
     def __init__(
         self,
         width: int,
@@ -59,7 +58,7 @@ class Map:
         return "\n".join(description)
 
     @classmethod
-    def from_json(cls, data: Dict[str, Any]) -> "Map":
+    def from_dict(cls, data: Dict[str, Any]) -> "TmxMap":
         layers = {
             LayerType.TILE: [],
             LayerType.OBJECT: [],
@@ -68,9 +67,9 @@ class Map:
         for layer_data in data.get("layers", []):
             layer_type = layer_data["type"]
             if layer_type == "tilelayer":
-                layers[LayerType.TILE].append(TileLayer.from_json(layer_data))
+                layers[LayerType.TILE].append(TileLayer.from_dict(layer_data))
             elif layer_type == "objectgroup":
-                layers[LayerType.OBJECT].append(ObjectLayer.from_json(layer_data))
+                layers[LayerType.OBJECT].append(ObjectLayer.from_dict(layer_data))
             else:
                 raise TiledMapError(f"Unsupported layer type {layer_type}")
 
@@ -81,8 +80,3 @@ class Map:
             tile_height=data.get("tileheight", 0),
             layers=layers,
         )
-
-    @staticmethod
-    def parse_tiled_json(json_file: str) -> "Map":
-        with open(json_file, "r", encoding="utf-8") as file:
-            return Map.from_json(json.load(file))

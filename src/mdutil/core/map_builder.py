@@ -1,21 +1,22 @@
-from typing import List, Optional, Tuple
+from pathlib import Path
+from typing import List, Optional, Tuple, Union
 
 import click
 import numpy as np
 from PIL import Image
 
 from mdutil.core.tileset import Tileset
-from mdutil.core.tmx import LayerType, Map, TileLayer
+from mdutil.core.tmx import LayerType, MapFactory, TileLayer
 
 
 class MapImageBuilder:
     def __init__(
         self,
-        json_path: str,
+        tiled_file_path: Union[str, Path],
         tileset_path: str,
     ) -> None:
 
-        self.map = Map.parse_tiled_json(json_path)
+        self.map = MapFactory().from_file(tiled_file_path)
         self.tile_size = self.map.get_tile_size()
         self.tileset = Tileset(self.tile_size, tileset_path)
 

@@ -5,7 +5,7 @@ with [SGDK](https://github.com/Stephane-D/SGDK).
 
 ## Requirements
 
-- Python 3.8+
+- Python 3.10+
 - pipx
 
 ## Installation

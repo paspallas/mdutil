@@ -38,7 +38,7 @@ class BaseLayer(ABC):
         self.properties = properties or []
 
     @abstractmethod
-    def from_json(cls, data: Dict[str, Any]):
+    def from_dict(cls, data: Dict[str, Any]):
         pass
 
 
@@ -90,30 +90,34 @@ class TileLayer(BaseLayer):
         return "\n".join(description)
 
     @classmethod
-    def from_json(cls, data: Dict[str, any]) -> "TileLayer":
-        encoding = data.get("encoding", None)
-        compression = data.get("compression", None)
+    def from_dict(cls, data: Dict[str, any]) -> "TileLayer":
+        encoding = data.get("encoding", "csv")
 
-        if encoding is None:
-            tile_data = TileLayer.from_csv(data.get("data", []))
+        if encoding == "csv":
+            tile_data = TileData.from_csv(data.get("data", []))
         elif encoding == "base64":
-            if compression == "":
-                tile_data = TileLayer.from_base64(data.get("data", ""))
-            elif compression == "zlib":
-                tile_data = TileLayer.from_base64_zlib(data.get("data", ""))
-            elif compression == "gzip":
-                tile_data = TileLayer.from_base64_gzip(data.get("data", ""))
-            elif compression == "zstd":
-                tile_data = TileLayer.from_base64_zstd(data.get("data", ""))
-            else:
-                raise TileLayerError(
-                    f"Unsupported tile layer compression: {compression}"
-                )
+
+            tiles = data.get("data", "")
+            compression = data.get("compression", None)
+
+            match compression:
+                case None:
+                    tile_data = TileData.from_base64(tiles)
+                case "zlib":
+                    tile_data = TileData.from_base64_zlib(tiles)
+                case "gzip":
+                    tile_data = TileData.from_base64_gzip(tiles)
+                case "zstd":
+                    tile_data = TileData.from_base64_zstd(tiles)
+                case _:
+                    raise TileLayerError(
+                        f"Unsupported tile layer compression: {compression}"
+                    )
         else:
             raise TileLayerError(f"Unsupported tile layer encoding: {encoding}")
 
         properties = [
-            CustomProperty.from_json(prop) for prop in data.get("properties", [])
+            CustomProperty.from_dict(prop) for prop in data.get("properties", [])
         ]
 
         return cls(
@@ -125,6 +129,8 @@ class TileLayer(BaseLayer):
             properties=properties,
         )
 
+
+class TileData:
     @staticmethod
     def from_base64(tile_data: str) -> List[int]:
         return np.frombuffer(b64decode(tile_data), dtype=np.uint32).tolist()
@@ -201,10 +207,10 @@ class ObjectLayer(BaseLayer):
         return "\n".join(description)
 
     @classmethod
-    def from_json(cls, data: Dict[str, Any]) -> "ObjectLayer":
-        objects = [Object.from_json(obj) for obj in data.get("objects", [])]
+    def from_dict(cls, data: Dict[str, Any]) -> "ObjectLayer":
+        objects = [Object.from_dict(obj) for obj in data.get("objects", [])]
         properties = [
-            CustomProperty.from_json(prop) for prop in data.get("properties", [])
+            CustomProperty.from_dict(prop) for prop in data.get("properties", [])
         ]
 
         return cls(

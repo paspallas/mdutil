@@ -5,14 +5,23 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mdutilities"
-version = "0.1.0"
+version = "0.1.1"
 readme = "README.md"
 description = "A command line tool for megadrive homebrew developers"
 authors = [{ name = "Pablo Porta", email = "paspallasdev@gmail.com" }]
 maintainers = [{ name = "Pablo Porta", email = "paspallasdev@gmail.com" }]
 license = { file = "LICENSE" }
-keywords = ["homebrew", "cli", "megadrive", "tiled", "tool"]
-requires-python = ">=3.8"
+keywords = [
+    "homebrew",
+    "cli",
+    "megadrive",
+    "tiled",
+    "tool",
+    "exporter",
+    "templates",
+    "mako",
+]
+requires-python = ">=3.10"
 dependencies = [
     "click>=8.1.7",
     "numpy>=2.1.2",
@@ -28,8 +37,6 @@ classifiers = [
     "Intended Audience :: End Users/Desktop",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",

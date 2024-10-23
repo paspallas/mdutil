@@ -14,7 +14,7 @@ def version():
 
     click.echo(
         f"""
-  mdutil v{__version__}
+ mdutil v{__version__}
  Python {sys.version.split()[0]}
  Platform: {platform.platform()} 
  Pillow: {PIL.__version__}
