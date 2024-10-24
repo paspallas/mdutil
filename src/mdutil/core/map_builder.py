@@ -6,7 +6,7 @@ import numpy as np
 from PIL import Image
 
 from mdutil.core.tileset import Tileset
-from mdutil.core.tmx import LayerType, MapFactory, TileLayer
+from mdutil.core.tmx.model import LayerType, TileLayer, TmxMap
 
 
 class MapImageBuilder:
@@ -16,7 +16,7 @@ class MapImageBuilder:
         tileset_path: str,
     ) -> None:
 
-        self.map = MapFactory().from_file(tiled_file_path)
+        self.map = TmxMap.from_file(tiled_file_path)
         print(self.map)
         self.tile_size = self.map.get_tile_size()
         self.tileset = Tileset(self.tile_size, tileset_path)

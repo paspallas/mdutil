@@ -4,10 +4,6 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, Dict, Union
 
-from mdutil.core.exceptions import TiledMapError
-
-from .map import TmxMap
-
 
 class TmxParser(ABC):
     @abstractmethod
@@ -79,21 +75,3 @@ class XmlTmxParser(TmxParser):
                 result[attr] = int(result[attr])
 
         return result
-
-
-class MapFactory:
-    def __init__(self) -> None:
-        self.parsers: Dict[str, TmxParser] = {
-            ".json": JsonTmxParser(),
-            ".tmj": JsonTmxParser(),
-            ".tmx": XmlTmxParser(),
-            ".xml": XmlTmxParser(),
-        }
-
-    def from_file(self, file_path: Union[str, Path]) -> TmxMap:
-        path = Path(file_path)
-        parser = self.parsers.get(path.suffix.lower())
-        if not parser:
-            raise TiledMapError(f"Unrecognized file format: {path}")
-
-        return TmxMap.from_dict(parser.parse(path))

@@ -1,10 +1,30 @@
-from typing import Any, Dict, List
+from pathlib import Path
+from typing import Any, Dict, List, Union
 
 from mdutil.core.exceptions import *
+from mdutil.core.tmx.parser import *
 from mdutil.core.util import Size
 
 from .layer import BaseLayer, LayerType, ObjectLayer, TileLayer
 from .object import Object
+
+
+class TmxMapFactory:
+    def __init__(self) -> None:
+        self.parsers: Dict[str, TmxParser] = {
+            ".json": JsonTmxParser(),
+            ".tmj": JsonTmxParser(),
+            ".tmx": XmlTmxParser(),
+            ".xml": XmlTmxParser(),
+        }
+
+    def from_file(self, file_path: Union[str, Path]) -> "TmxMap":
+        path = Path(file_path)
+        parser = self.parsers.get(path.suffix.lower())
+        if not parser:
+            raise TiledMapError(f"Unrecognized file format: {path}")
+
+        return TmxMap.from_dict(parser.parse(path))
 
 
 class TmxMap:
@@ -99,3 +119,7 @@ class TmxMap:
             tile_height=data.get("tileheight", 0),
             layers=layers,
         )
+
+    @classmethod
+    def from_file(self, file_path: Union[str, Path]) -> "TmxMap":
+        return TmxMapFactory().from_file(file_path)
