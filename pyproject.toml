@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mdutilities"
-version = "0.1.1"
+dynamic = ["version"]
 readme = "README.md"
 description = "A command line tool for megadrive homebrew developers"
 authors = [{ name = "Pablo Porta", email = "paspallasdev@gmail.com" }]
@@ -29,7 +29,6 @@ dependencies = [
     "zstandard>=0.23.0",
 ]
 
-
 # For PyPI distribution
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -49,3 +48,6 @@ Documentation = "https://mdutil.readthedocs.io"
 
 [project.scripts]
 mdutil = "mdutil.cli.main:cli"
+
+[tool.setuptools.dynamic]
+version = { attr = "mdutil.version.__version__" }
