@@ -9,6 +9,9 @@ class MapApi:
     def __init__(self, tmx_map: TmxMap) -> None:
         self._map = tmx_map
 
+    def map_as_string(self) -> str:
+        return str(self._map)
+
     def get_size_in_tile(self) -> Size:
         return Size(self._map.height, self._map.width)
 

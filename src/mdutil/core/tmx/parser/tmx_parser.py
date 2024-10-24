@@ -36,7 +36,10 @@ class XmlTmxParser(TmxParser):
             elif child.tag == "tileset":
                 if "tilesets" not in result:
                     result["tilesets"] = []
-                result["tilesets"].append(self._element_to_dict(child))
+
+                tileset = self._element_to_dict(child)
+                tileset["image"] = child.find("image").attrib["source"]
+                result["tilesets"].append(tileset)
             elif child.tag == "data":
                 for attr, val in child.attrib.items():
                     result[attr] = val
@@ -70,7 +73,18 @@ class XmlTmxParser(TmxParser):
             if attr in result:
                 result[attr] = float(result[attr])
 
-        for attr in ["width", "height", "id", "tilewidth", "tileheight"]:
+        for attr in [
+            "width",
+            "height",
+            "id",
+            "tilewidth",
+            "tileheight",
+            "tilecount",
+            "spacing",
+            "margin",
+            "columns",
+            "firstgid",
+        ]:
             if attr in result:
                 result[attr] = int(result[attr])
 

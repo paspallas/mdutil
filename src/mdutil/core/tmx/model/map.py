@@ -6,7 +6,6 @@ from mdutil.core.tmx.parser import *
 from mdutil.core.util import Size, smart_repr
 
 from .layer import BaseLayer, LayerType, ObjectLayer, TileLayer
-from .object import Object
 from .tileset import Tileset
 
 
@@ -86,7 +85,7 @@ class TmxMap:
                 raise TiledMapError(f"Unsupported layer type {layer_type}")
 
         for tileset_data in data.get("tilesets", []):
-            tilesets.append(Tileset.from_dict(tileset_data))
+            tilesets.append(Tileset.from_dict(tileset_data, data.get("path")))
 
         return cls(
             path=data.get("path", None),
