@@ -1,5 +1,5 @@
 from dataclasses import astuple, dataclass
-from typing import Tuple
+from typing import Dict, Tuple
 
 
 @dataclass
@@ -26,8 +26,12 @@ class Size:
 
 @dataclass
 class Point:
-    x: int
-    y: int
+    x: float
+    y: float
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, float]) -> "Point":
+        return cls(data["x"], data["y"])
 
 
 @dataclass

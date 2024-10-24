@@ -17,6 +17,7 @@ class MapImageBuilder:
     ) -> None:
 
         self.map = MapFactory().from_file(tiled_file_path)
+        print(self.map)
         self.tile_size = self.map.get_tile_size()
         self.tileset = Tileset(self.tile_size, tileset_path)
 

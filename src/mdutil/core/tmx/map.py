@@ -4,6 +4,7 @@ from mdutil.core.exceptions import *
 from mdutil.core.util import Size
 
 from .layer import BaseLayer, LayerType, ObjectLayer, TileLayer
+from .object import Object
 
 
 class TmxMap:
@@ -29,6 +30,24 @@ class TmxMap:
 
     def get_tile_size(self) -> Size:
         return Size(self.tile_height, self.tile_width)
+
+    def get_object_by_id(self, id_: int) -> Object:
+        for layers in self.get_layers(LayerType.OBJECT):
+            for layer in layers:
+                for obj in layer:
+                    if obj.id_ == id_:
+                        return obj
+
+        raise TiledMapError(f"Object with id: {id_} not found in the map.")
+
+    def get_object_by_name(self, name: str) -> Object:
+        for layers in self.get_layers(LayerType.OBJECT):
+            for layer in layers:
+                for obj in layer:
+                    if obj.name == name:
+                        return obj
+
+        raise TiledMapError(f"Object with name: {name} not found in the map.")
 
     def get_layers(self, layer_type: LayerType) -> List[BaseLayer]:
         return self.layers[layer_type]

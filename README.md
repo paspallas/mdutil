@@ -1,5 +1,7 @@
 # mdutil
 
+[![Publish](https://github.com/paspallas/mdutil/actions/workflows/publish.yml/badge.svg)](https://github.com/paspallas/mdutil/actions/workflows/publish.yml)
+
 `mdutil` is a Python cli application designed to help with common tasks in the context of game development for retro systems. It's specially tailored but not limited to the Sega Megadrive used in conjuntion
 with [SGDK](https://github.com/Stephane-D/SGDK).
 

@@ -85,7 +85,9 @@ class MapFactory:
     def __init__(self) -> None:
         self.parsers: Dict[str, TmxParser] = {
             ".json": JsonTmxParser(),
+            ".tmj": JsonTmxParser(),
             ".tmx": XmlTmxParser(),
+            ".xml": XmlTmxParser(),
         }
 
     def from_file(self, file_path: Union[str, Path]) -> TmxMap:
