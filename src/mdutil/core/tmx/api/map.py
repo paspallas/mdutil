@@ -1,5 +1,7 @@
 from typing import List
 
+import numpy as np
+
 from mdutil.core.exceptions import *
 from mdutil.core.tmx.model import BaseLayer, LayerType, Object, TmxMap
 from mdutil.core.util import Size
@@ -51,3 +53,10 @@ class MapApi:
                 return layer
 
         raise TiledMapError(f"Layer '{name}' not found in the map file.")
+
+    def get_tile(self, gid: int, priority) -> np.ndarray:
+        for tileset in self._map.tilesets:
+            if gid in tileset:
+                return tileset.get_tile(gid, priority)
+
+        raise TilesetError(f"Gid: {gid} not found in tileset collection.")

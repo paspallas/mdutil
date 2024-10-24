@@ -27,9 +27,6 @@ def validate_layer_id(id_: str, lo: str, hi: str):
     "tiled_file_path", type=click.Path(exists=True, dir_okay=True, path_type=Path)
 )
 @click.argument(
-    "tileset_file_path", type=click.Path(exists=True, dir_okay=True, path_type=Path)
-)
-@click.argument(
     "output_folder", type=click.Path(exists=False, dir_okay=True, path_type=Path)
 )
 @click.option(
@@ -44,7 +41,6 @@ def validate_layer_id(id_: str, lo: str, hi: str):
 def genmap(
     ctx,
     tiled_file_path: Path,
-    tileset_file_path: Path,
     output_folder: Path,
     layer: ParameterPair,
 ):
@@ -52,16 +48,14 @@ def genmap(
     Generate a (pair) png file that can be used as a SGDK MAP resource from a tiled file
 
     TILED_FILE_PATH: Path to the input tiled file in json or tmx format\n
-    TILESET_FILE_PATH: Path to the tileset image\n
     OUTPUT_FOLDER: Path to the output folder
-
     """
     try:
         # Create output directory if it doesn't exist
         output_folder.mkdir(parents=True, exist_ok=True)
         output_path = output_folder / tiled_file_path.stem
 
-        builder = MapImageBuilder(tiled_file_path, tileset_file_path.as_posix())
+        builder = MapImageBuilder(tiled_file_path)
 
         for id_val, lo, hi in layer:
             lo_layer = lo if lo != "_" else None

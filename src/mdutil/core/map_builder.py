@@ -14,12 +14,9 @@ class MapImageBuilder:
     def __init__(
         self,
         tiled_file_path: Union[str, Path],
-        tileset_path: str,
     ) -> None:
 
         self.map_api = MapApi(TmxMap.from_file(tiled_file_path))
-        self.tile_size = self.map_api.get_tile_size()
-        self.tileset = TilesetImage(self.tile_size, tileset_path)
 
     def _build_tilemap_image(
         self, layers: List[Tuple[TileLayer, TilesetImage.Priority]]
@@ -28,9 +25,11 @@ class MapImageBuilder:
         map_height, map_width = self.map_api.get_size_in_px()
         tilemap_array = np.zeros((map_height, map_width), dtype=np.uint8)
 
+        self.tile_size = self.map_api.get_tile_size()
+
         def stack_layer(layer: TileLayer, priority: TilesetImage.Priority) -> None:
-            for i, tile_id in enumerate(layer):
-                if tile_id == 0:
+            for i, gid in enumerate(layer):
+                if gid == 0:
                     continue
 
                 # Get the tile position in the composited image
@@ -40,7 +39,7 @@ class MapImageBuilder:
                 tilemap_array[
                     map_y : map_y + self.tile_size.height,
                     map_x : map_x + self.tile_size.width,
-                ] = self.tileset.get_tile(tile_id, priority)
+                ] = self.map_api.get_tile(gid, priority)
 
         for layer in layers:
             stack_layer(
@@ -77,7 +76,8 @@ class MapImageBuilder:
             with Image.fromarray(
                 self._build_tilemap_image(stacked_layers), mode="P"
             ) as img:
-                img.putpalette(self.tileset.get_pal())
+                # TODO Fix me
+                img.putpalette(self.map_api._map.tilesets[0].get_palette())
                 img.save(output_path, format="PNG", optimize=False)
 
                 click.echo(click.style(f"Saved '{output_path}'.", fg="green"))

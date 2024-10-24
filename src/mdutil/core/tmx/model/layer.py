@@ -56,8 +56,6 @@ class TileLayerIterator:
             raise StopIteration
 
         value = self.data[self.index]
-        # TODO check the tileset gid
-        value = value - 1 if value > 0 else 0
         self.index += 1
 
         return value

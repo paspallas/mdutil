@@ -15,7 +15,7 @@ from mdutil.core.util import Size
 class BadTile:
     pos: Tuple[int]
     indexes: Tuple[int]
-    rect: Tuple[int, int, int, int]
+    rect: Tuple[int]
 
     def __str__(self) -> str:
         return f"  Tile at {self.pos} uses colors from palettes {self.indexes}"
@@ -39,9 +39,9 @@ class TileDebugger:
 
         error_messages = [str(error) for error in self.errors]
         raise TilesetError(
-            "Bad tiles encountered while processing the tileset:\n"
-            + "\n".join(error_messages)
-            + f"\n\n  Dumped debug tileset image to '{self.path}'."
+            "Bad tiles encountered in the tileset:\n {errors}\n\n  Created debug image: {path}".format(
+                errors="\n".join(error_messages), path=self.path
+            )
         )
 
     def _create_debug_tileset(self) -> None:
@@ -69,14 +69,9 @@ class TilesetImage:
         LO = auto()
         HI = auto()
 
-    def __init__(self, tile_size: Size, path: str):
-        """Create a tileset from a png image,
+    def __init__(self, tile_size: Size, path: Path):
+        """Create a tileset from a png image"""
 
-        Args:
-            tile_width (int): width of the tile in pixels
-            tile_height (int): height of the tile in pixels
-            path (str): path to the tileset image
-        """
         self.errors = []
 
         self.path = path
@@ -98,8 +93,13 @@ class TilesetImage:
             debug.generate_report()
 
     def _load(self, img_path: str) -> np.ndarray:
-        with Image.open(img_path).convert("P") as img:
-            return np.array(img)
+        with Image.open(img_path) as img:
+            if img.mode == "P":
+                return np.array(img)
+
+            raise TilesetError(
+                f"Tileset image: {img_path} is not an indexed color image."
+            )
 
     def _encode_hi_priority(self, tile_id: int) -> np.array:
         if tile_id in self.tiles_hi:
