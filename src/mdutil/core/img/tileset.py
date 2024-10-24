@@ -7,7 +7,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 from mdutil.core.exceptions import TilesetError
-from mdutil.core.palette import Palette
+from mdutil.core.img.palette import Palette
 from mdutil.core.util import Size
 
 
@@ -64,7 +64,7 @@ class TileDebugger:
                     )
 
 
-class Tileset:
+class TilesetImage:
     class Priority(Enum):
         LO = auto()
         HI = auto()
@@ -175,7 +175,7 @@ class Tileset:
         return self.palette.as_list()
 
     def get_tile(self, tile_id: int, priority: Priority) -> np.ndarray:
-        if priority == Tileset.Priority.LO:
+        if priority == TilesetImage.Priority.LO:
             return self.tiles_lo[tile_id]
 
         return self._encode_hi_priority(tile_id)

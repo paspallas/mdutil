@@ -5,7 +5,8 @@ import click
 import numpy as np
 from PIL import Image
 
-from mdutil.core.tileset import Tileset
+from mdutil.core.img.tileset import TilesetImage
+from mdutil.core.tmx.api import MapApi
 from mdutil.core.tmx.model import LayerType, TileLayer, TmxMap
 
 
@@ -16,18 +17,18 @@ class MapImageBuilder:
         tileset_path: str,
     ) -> None:
 
-        self.map = TmxMap.from_file(tiled_file_path)
-        print(self.map)
-        self.tile_size = self.map.get_tile_size()
-        self.tileset = Tileset(self.tile_size, tileset_path)
+        self.map_api = MapApi(TmxMap.from_file(tiled_file_path))
+        self.tile_size = self.map_api.get_tile_size()
+        self.tileset = TilesetImage(self.tile_size, tileset_path)
 
     def _build_tilemap_image(
-        self, layers: List[Tuple[TileLayer, Tileset.Priority]]
+        self, layers: List[Tuple[TileLayer, TilesetImage.Priority]]
     ) -> np.ndarray:
-        map_size = self.map.get_size_in_px()
-        tilemap_array = np.zeros((map_size.height, map_size.width), dtype=np.uint8)
 
-        def stack_layer(layer: TileLayer, priority: Tileset.Priority) -> None:
+        map_height, map_width = self.map_api.get_size_in_px()
+        tilemap_array = np.zeros((map_height, map_width), dtype=np.uint8)
+
+        def stack_layer(layer: TileLayer, priority: TilesetImage.Priority) -> None:
             for i, tile_id in enumerate(layer):
                 if tile_id == 0:
                     continue
@@ -60,15 +61,15 @@ class MapImageBuilder:
         if lo_layer:
             stacked_layers.append(
                 (
-                    self.map.get_layer_by_name(LayerType.TILE, lo_layer),
-                    Tileset.Priority.LO,
+                    self.map_api.get_layer_by_name(LayerType.TILE, lo_layer),
+                    TilesetImage.Priority.LO,
                 ),
             )
         if hi_layer:
             stacked_layers.append(
                 (
-                    self.map.get_layer_by_name(LayerType.TILE, hi_layer),
-                    Tileset.Priority.HI,
+                    self.map_api.get_layer_by_name(LayerType.TILE, hi_layer),
+                    TilesetImage.Priority.HI,
                 )
             )
 
