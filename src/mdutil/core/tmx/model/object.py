@@ -1,7 +1,7 @@
 from enum import Enum, auto
 from typing import Any, Dict, List
 
-from mdutil.core.util import Point
+from mdutil.core.util import Point, smart_repr
 
 from .property import CustomProperty
 
@@ -41,13 +41,7 @@ class Object:
         self.properties.append(property)
 
     def __repr__(self) -> str:
-        description = [
-            (
-                f"Object(name={self.name}, id={self.id}, class={self.class_}, "
-                f"x={self.x}, y={self.y}, w={self.width}, h={self.height}, "
-                f"type={self.type.name})"
-            )
-        ]
+        description = [smart_repr(self, exclude=("properties", "polyline"))]
         for prop in self.properties:
             description.append(f"     *{str(prop)}")
 

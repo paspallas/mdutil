@@ -1,9 +1,10 @@
+import itertools
 from pathlib import Path
 from typing import Any, Dict, List, Union
 
 from mdutil.core.exceptions import *
 from mdutil.core.tmx.parser import *
-from mdutil.core.util import Size
+from mdutil.core.util import Size, smart_repr
 
 from .layer import BaseLayer, LayerType, ObjectLayer, TileLayer
 from .object import Object
@@ -87,9 +88,7 @@ class TmxMap:
         return count
 
     def __repr__(self) -> str:
-        description = [
-            f" Map(w={self.width}, h={self.height}, tw={self.tile_width}, th={self.tile_height} layers={len(self)})"
-        ]
+        description = [smart_repr(self, exclude=("layers"))]
         for layers in self.layers.values():
             for layer in layers:
                 description.append(f" -{str(layer)}")

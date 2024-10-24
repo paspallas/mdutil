@@ -10,6 +10,7 @@ import numpy as np
 import zstandard as zstd
 
 from mdutil.core.exceptions import TileLayerError
+from mdutil.core.util import smart_repr
 
 from .object import Object
 from .property import CustomProperty
@@ -82,8 +83,7 @@ class TileLayer(BaseLayer):
         return len(self.tile_data)
 
     def __repr__(self) -> str:
-        description = [f"TileLayer(name={self.name}, id={self.id})"]
-
+        description = [smart_repr(self, exclude=("properties", "type", "tile_data"))]
         for prop in self.properties:
             description.append(f"   *{str(prop)}")
 
@@ -196,7 +196,7 @@ class ObjectLayer(BaseLayer):
         return len(self.objects)
 
     def __repr__(self) -> str:
-        description = [f"ObjectLayer(name={self.name}, id={self.id})"]
+        description = [smart_repr(self, exclude=("objects", "properties", "type"))]
 
         for prop in self.properties:
             description.append(f"   *{str(prop)}")
